@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_dont_list/objects/course.dart';
 
 typedef ToDoListAddedCallback = Function(
     String value, TextEditingController textController, String courseName, TextEditingController textController2);
@@ -7,9 +8,11 @@ class ToDoDialog extends StatefulWidget {
   const ToDoDialog({
     super.key,
     required this.onListAdded,
+    required this.courses,
   });
 
   final ToDoListAddedCallback onListAdded;
+  final List<Course> courses;
 
   @override
   State<ToDoDialog> createState() => _ToDoDialogState();
@@ -18,6 +21,8 @@ class ToDoDialog extends StatefulWidget {
 class _ToDoDialogState extends State<ToDoDialog> {
   // Dialog with text from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
   final TextEditingController _inputController = TextEditingController();
+  String? selectedCourse;
+
   final TextEditingController _inputController2 = TextEditingController();
   final ButtonStyle yesStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.green);
@@ -25,7 +30,6 @@ class _ToDoDialogState extends State<ToDoDialog> {
       textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.red);
 
   String valueText = "";
-  String valueText2 = "";
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,7 @@ class _ToDoDialogState extends State<ToDoDialog> {
       title: const Text('Item To Add'),
       content: 
         Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             TextField(
               onChanged: (value) {
@@ -44,15 +49,20 @@ class _ToDoDialogState extends State<ToDoDialog> {
               decoration: const InputDecoration(hintText: "Put HW name here"),
               key: const Key('HW'),
             ),
-            TextField(
-              onChanged: (value) {
+            DropdownButton<String>(
+              value: selectedCourse,
+              hint: const Text('Select a course'),
+              items: widget.courses.map((Course course) {
+                return DropdownMenuItem<String>(
+                  value: course.name,
+                  child: Text(course.name),
+                );
+              }).toList(), 
+              onChanged: (String? newValue) {
                 setState(() {
-                  valueText2 = value;
+                  selectedCourse = newValue;
                 });
               },
-              controller: _inputController2,
-              decoration: const InputDecoration(hintText: "Put Course name here"),
-              key: const Key('CN'),
             )
           ],
         ),
@@ -64,10 +74,10 @@ class _ToDoDialogState extends State<ToDoDialog> {
             return ElevatedButton(
               key: const Key("OKButton"),
               style: yesStyle,
-              onPressed: value.text.isNotEmpty
+              onPressed: (value.text.isNotEmpty && selectedCourse != null)
                   ? () {
                       setState(() {
-                        widget.onListAdded(valueText, _inputController, valueText2, _inputController2);
+                        widget.onListAdded(valueText, _inputController, selectedCourse!, _inputController2);
                         Navigator.pop(context);
                       });
                     }
