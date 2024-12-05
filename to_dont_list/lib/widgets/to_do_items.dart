@@ -57,6 +57,7 @@ class ToDoListItem extends StatelessWidget {
         item.name,
         style: _getTextStyle(context),
       ),
+      trailing: Text('due: ${item.dueDate.month.toString()}/${item.dueDate.day.toString()}/${item.dueDate.year.toString()}'),
     );
   }
 }

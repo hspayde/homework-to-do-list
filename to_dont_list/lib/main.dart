@@ -15,7 +15,7 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
   final List<Course> courses = [const Course(name: "Course", color: Color.fromARGB(255, 42, 101, 42))];
-  final List<Item> items = [const Item(name: "First Homework", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)))];
+  final List<Item> items = [ Item(name: "First Homework", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)), dueDate: DateTime(2025,12,12))];
   final _itemSet = <Item>{};
 
   void _handleListChanged(Item item, bool completed) {
@@ -35,6 +35,7 @@ class _ToDoListState extends State<ToDoList> {
         print("Making Undone");
         _itemSet.remove(item);
         items.insert(0, item);
+        items.sort((a, b) => a.dueDate.isBefore(b.dueDate)? -1 : 1);
       }
     });
   }
@@ -46,17 +47,18 @@ class _ToDoListState extends State<ToDoList> {
     });
   }
 
-  void _handleNewItem(String itemText, TextEditingController textController, String courseName, TextEditingController textController2) {
+  void _handleNewItem(String itemText, TextEditingController textController, String courseName, TextEditingController textController2, DateTime due) {
     setState(() {
       int i = _checkCourseList(courseName);
       if(i != -1) {
         print("Adding new item");
-        Item item = Item(name: itemText, course: courses[i]);
+        Item item = Item(name: itemText, course: courses[i], dueDate: due);
         items.insert(0, item);
         textController.clear();
       }else {
         print("Invalid Course Name");
       }
+      items.sort((a, b) => a.dueDate.isBefore(b.dueDate)? -1 : 1);
     });
   }
 

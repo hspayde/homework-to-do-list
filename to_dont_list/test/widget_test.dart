@@ -15,7 +15,7 @@ import 'package:to_dont_list/objects/course.dart';
 
 void main() {
   test('Item abbreviation should be first letter', () {
-    const item = Item(name: "add more todos", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)));
+    var item = Item(name: "add more todos", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)), dueDate: DateTime(2025,12,12) );
     expect(item.abbrev(), "a");
   });
 
@@ -24,7 +24,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
             body: ToDoListItem(
-                item: const Item(name: "test", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42))),
+                item: Item(name: "test", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)), dueDate: DateTime(2025,12,12)),
                 completed: true,
                 onListChanged: (Item item, bool completed) {},
                 onDeleteItem: (Item item) {}))));
@@ -40,7 +40,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
             body: ToDoListItem(
-                item: const Item(name: "test", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42))),
+                item: Item(name: "test", course: Course(name: 'Course', color: Color.fromARGB(255, 42, 101, 42)), dueDate: DateTime(2025,12,12)),
                 completed: true,
                 onListChanged: (Item item, bool completed) {},
                 onDeleteItem: (Item item) {}))));
