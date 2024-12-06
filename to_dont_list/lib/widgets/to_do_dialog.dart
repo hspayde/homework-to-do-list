@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:to_dont_list/objects/course.dart';
 
 typedef ToDoListAddedCallback = Function(
-    String value, TextEditingController textController, String courseName, TextEditingController textController2);
+    String value, TextEditingController textController, String courseName, TextEditingController textController2, DateTime due);
 
 class ToDoDialog extends StatefulWidget {
   const ToDoDialog({
@@ -30,6 +30,22 @@ class _ToDoDialogState extends State<ToDoDialog> {
       textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.red);
 
   String valueText = "";
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context, 
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024, 1), 
+        lastDate: DateTime(2100));
+    if (picked != null && picked != selectedDate){
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +79,13 @@ class _ToDoDialogState extends State<ToDoDialog> {
                   selectedCourse = newValue;
                 });
               },
-            )
+            ),
+            ElevatedButton(
+              onPressed: () => selectDate(context),
+              child: const Text('Select Due Date')),
+              Text('${selectedDate.month}/${selectedDate.day}/${selectedDate.year}')
           ],
+          
         ),
         
       actions: <Widget>[
@@ -77,7 +98,7 @@ class _ToDoDialogState extends State<ToDoDialog> {
               onPressed: (value.text.isNotEmpty && selectedCourse != null)
                   ? () {
                       setState(() {
-                        widget.onListAdded(valueText, _inputController, selectedCourse!, _inputController2);
+                        widget.onListAdded(valueText, _inputController, selectedCourse!, _inputController2, selectedDate);
                         Navigator.pop(context);
                       });
                     }
